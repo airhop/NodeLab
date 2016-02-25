@@ -1,0 +1,159 @@
+<html>
+<head>
+<link href="http://fonts.googleapis.com/css?family=Exo" 
+rel="stylesheet" type="text/css" />
+<title>Weather For Utah Cities</title>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+$(document).ready(function (){
+
+$( "#cityfield" ).keyup(function() {
+var url = "https://students.cs.byu.edu/~clement/CS360/ajax/getcity.cgi?q="+$("#cityfield").val();
+$.getJSON(url,function(data) {
+    var everything;
+    everything = "<ul>";
+    $.each(data, function(i,item) {
+      everything += "<li> "+data[i].city;
+    });
+    everything += "</ul>";
+    $("#txtHint").html(everything);
+  })
+});
+
+$("#button").click(function(e){
+  var value = $("#cityfield").val();
+  $("#dispcity").text(value);
+  e.preventDefault();
+
+   var myurl= "https://api.wunderground.com/api/620b0f8d6d5dd4c0/geolookup/conditions/q/UT/";
+  myurl += value;
+  myurl += ".json";
+  console.log(myurl);
+  $.ajax({
+    url : myurl,
+    dataType : "jsonp",
+    success : function(parsed_json) {
+      var location = parsed_json['location']['city'];
+      var temp_string = parsed_json['current_observation']['temperature_string'];
+      var current_weather = parsed_json['current_observation']['weather'];
+      everything = "";
+      everything += "<h3>Location</h3>"+"<h4>"+location+"</h4>";
+      everything += "<h3>Temperature</h3>"+"<h4>"+temp_string+"</h4>";
+      everything += "<h3>Weather</h3>"+"<h4>"+current_weather+"</h4>";
+      $("#weather").html(everything);
+    }
+  });
+
+});
+
+});
+
+</script>
+
+
+<style>
+html { 
+ 	 background: url(http://wallpapercave.com/wp/GbwKH1d.jpg) no-repeat center center fixed; 
+  	-webkit-background-size: cover;
+ 	 -moz-background-size: cover;
+ 	 -o-background-size: cover;
+	  background-size: cover;
+	}
+#button {
+   	 background-color: black;
+   	 border: none;
+   	 color: white;
+   	 padding: 30px 32px;
+    	 text-align: center;
+   	 text-decoration: none;
+   	 display: inline-block;
+    	 font-size: 40px;
+	width: 300px;
+	height: 200px:
+	decoration:underline;
+}
+h1{
+ 	font-family: 'Exo', serif;
+ 	font-size: 60px;
+	color: white;
+    width:100%;
+    overflow:auto; zoom: 1;
+    background-color: black;
+    box-shadow: 2px 2px 1px white;
+	text-align: center;
+}
+h2{
+color: #fff;
+font-size: 50px;
+font-weight: bold;
+font-family: Helvetica;
+text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
+}
+h3{
+ 	font-family: 'Exo', serif;
+ 	font-size: 45px;
+	color: white;
+	text-align:center;
+
+}
+h4{
+text-shadow: 2px 2px 0px #eee, 1px 1px 0px #707070;
+ 	font-family: 'Exo', serif;
+ 	font-size: 25px;
+	color: black;
+	text-align:center;
+}
+#cityfield{
+background: -webkit-gradient(linear, bottom, left 175px, from(#CCCCCC), to(#EEEEEE));
+background: -moz-linear-gradient(bottom, #CCCCCC, #EEEEEE 175px);
+margin:auto;
+position:relative;
+width:300px;
+height:50px;
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 14px;
+font-style: italic;
+line-height: 24px;
+font-weight: bold;
+color: #09C;
+text-decoration: none;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+padding:10px;
+border: 1px solid #999;
+border: inset 1px solid #333;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+#txtHint{
+ 	font-family: 'Exo', serif;
+ 	font-size: 18px;
+	color: white;
+}
+#dispcity{
+	width: 200px;
+	height: 50px;
+	border: 3px solid #cccccc;
+	padding: 5px;
+	font-family: Tahoma, sans-serif;
+	background-position: bottom right;
+	background-repeat: no-repeat;
+}
+</style>
+
+</head>
+<body>
+<form>
+<h1>Enter A Utah City: </h1> <center><input type="text" id="cityfield" value=""> </center>
+<h2>Suggestion(s):</h2> <span id="txtHint">Empty</span><br>
+<center><input id="button" type="submit" value="Submit"></center>
+</form>
+<h2>City</h2>
+<textarea id="dispcity">No City</textarea>
+<h2>Current Weather</h2>
+<div id="weather">No weather</div>
+
+</body>
+</html>
